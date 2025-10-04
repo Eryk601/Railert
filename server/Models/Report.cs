@@ -11,48 +11,43 @@ namespace server.Models
         Other
     }
 
-    public enum ReportStatus
+    public enum IncidentType
     {
-        Pending,
-        Verified,
-        Rejected,
-        Resolved
+        Delay,      // Opóźnienie
+        Accident,   // Wypadek
+        Breakdown,  // Awaria
+        Blockage,   // Zablokowany przejazd
+        Other
     }
 
     public class Report
     {
         public int Id { get; set; }
 
-        // === PODSTAWOWE INFORMACJE ===
-        [Required]
         public TransportType TransportType { get; set; }
-        [Required]
+        public IncidentType IncidentType { get; set; }
         public string LineNumber { get; set; } = string.Empty;
-        [Required]
+        public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        // === LOKALIZACJA ===
-        public double? Latitude { get; set; }     // współrzędne GPS
-        public double? Longitude { get; set; }
-        public string? LocationName { get; set; } // np. "Dworzec Główny", "ul. Piłsudskiego"
 
-        // === INFORMACJE CZASOWE ===
+        public double Latitude { get; set; } = 50.0676;
+        public double Longitude { get; set; } = 19.9864;
+        public string LocationName { get; set; } = "Tauron Arena Kraków";
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? ResolvedAt { get; set; } // kiedy zgłoszenie zakończono
 
-        // === STATUS I WERYFIKACJA ===
-        public ReportStatus Status { get; set; } = ReportStatus.Pending;
-        public int ConfirmationsCount { get; set; } = 0;   // ile osób potwierdziło zgłoszenie
-        public int RejectionsCount { get; set; } = 0;      // ile osób uznało je za nieprawdziwe
+        public int ConfirmationsCount { get; set; } = 0;
+        public int RejectionsCount { get; set; } = 0;
 
-        // === POWIĄZANIA ===
+        public bool IsActive { get; set; } = true;
+
         public int UserId { get; set; }
-        public User User { get; set; } = null!;             // użytkownik, który dodał zgłoszenie
+        public User User { get; set; } = null!;
 
-        public List<Verification> Verifications { get; set; } = new(); // głosy innych użytkowników
-
-        // === DODATKOWE DANE ===
-        public string? Source { get; set; } // np. "Manual", "API:ZTM", "API:PKP"
-        public string? ImageUrl { get; set; } // zdjęcie / screen zgłoszenia
+        // 🔹 Automatyczna aktualizacja statusu
+        public void UpdateActiveStatus()
+        {
+            IsActive = (ConfirmationsCount - RejectionsCount) >= -2;
+        }
     }
 }

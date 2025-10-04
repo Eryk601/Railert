@@ -1,0 +1,142 @@
+.home-container {
+  font-family: "Segoe UI", sans-serif;
+  background: #f7f7f7;
+  min-height: 100vh;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e5e5e5;
+  padding: 10px 20px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 200px;
+  height: auto;
+}
+
+.logo-text h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #c62828;
+}
+
+.logo-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.user-menu {
+  display: flex;
+  gap: 10px;
+}
+
+.user-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid #1976d2;   
+  border-radius: 6px;          
+  padding: 10px 10px;          
+  background: #fff;          
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.user-box:hover {
+  background: #f0f8ff;    
+}
+
+.icon-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.icon-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.search-box {
+  background: white;
+  border: 2px solid #1976d2;
+  border-radius: 6px;
+  padding: 20px;
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
+}
+
+.inputs-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.input-group input, 
+.input-group select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.input-group label {
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-swap {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.search-btn-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.search-btn {
+  background: #1976d2;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 30px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: #125aa0;
+}

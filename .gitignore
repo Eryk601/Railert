@@ -1,0 +1,20 @@
+# === FRONTEND (React) ===
+client/node_modules/
+client/build/
+client/coverage/
+
+# === BACKEND (.NET) ===
+server/bin/
+server/obj/
+server/*.db
+server/.vs/
+server/.vscode/
+server/*.user
+server/*.suo
+
+# === SYSTEM / OGÓLNE ===
+.DS_Store
+.vscode/
+*.log
+.env
+.env.*

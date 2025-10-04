@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using server.Data;
@@ -11,9 +12,11 @@ using server.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251004211116_InitialTransportSchema")]
+    partial class InitialTransportSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,59 +24,6 @@ namespace server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("server.Models.Journey", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("HasWarning")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SuggestedAlternative")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Journeys");
-                });
-
-            modelBuilder.Entity("server.Models.JourneySegment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("JourneyId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RideId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Sequence")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JourneyId");
-
-                    b.HasIndex("RideId");
-
-                    b.ToTable("JourneySegments");
-                });
 
             modelBuilder.Entity("server.Models.Report", b =>
                 {
@@ -267,36 +217,6 @@ namespace server.Migrations
                     b.ToTable("Verifications");
                 });
 
-            modelBuilder.Entity("server.Models.Journey", b =>
-                {
-                    b.HasOne("server.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("server.Models.JourneySegment", b =>
-                {
-                    b.HasOne("server.Models.Journey", "Journey")
-                        .WithMany("Segments")
-                        .HasForeignKey("JourneyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("server.Models.Ride", "Ride")
-                        .WithMany()
-                        .HasForeignKey("RideId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Journey");
-
-                    b.Navigation("Ride");
-                });
-
             modelBuilder.Entity("server.Models.Report", b =>
                 {
                     b.HasOne("server.Models.Ride", "Ride")
@@ -332,11 +252,6 @@ namespace server.Migrations
                     b.Navigation("Report");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("server.Models.Journey", b =>
-                {
-                    b.Navigation("Segments");
                 });
 
             modelBuilder.Entity("server.Models.Report", b =>

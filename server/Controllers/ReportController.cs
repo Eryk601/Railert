@@ -10,7 +10,7 @@ namespace server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // tylko zalogowani użytkownicy mogą dodawać zgłoszenia
+    [Authorize]
     public class ReportController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -20,7 +20,7 @@ namespace server.Controllers
             _context = context;
         }
 
-        // === GET: /api/report (publiczny podgląd wszystkich zgłoszeń) ===
+        // === [GET] aktywne raporty ===
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetReports()
@@ -28,30 +28,30 @@ namespace server.Controllers
             var reports = await _context.Reports
                 .Where(r => r.IsActive)
                 .Include(r => r.User)
-                .Select(r => new
+                .Include(r => r.Ride)
+                .Select(r => new ReportListResponse
                 {
-                    r.Id,
-                    r.TransportType,
-                    r.LineNumber,
-                    r.IncidentType,
-                    r.Title,
-                    r.Description,
-                    r.Latitude,
-                    r.Longitude,
-                    r.LocationName,
-                    r.CreatedAt,
-                    r.ConfirmationsCount,
-                    r.RejectionsCount,
+                    Id = r.Id,
+                    TransportTypeName = r.TransportType.ToString(),
+                    LineNumber = r.LineNumber,
+                    Title = r.Title,
+                    Description = r.Description,
+                    Latitude = r.Latitude,
+                    Longitude = r.Longitude,
+                    LocationName = r.LocationName,
+                    CreatedAt = r.CreatedAt,
+                    ConfirmationsCount = r.ConfirmationsCount,
                     UserDisplayName = string.IsNullOrEmpty(r.User.DisplayName)
                         ? "Użytkownik anonimowy"
-                        : r.User.DisplayName
+                        : r.User.DisplayName,
+                    ScheduledArrival = r.Ride != null ? r.Ride.ScheduledArrival : null
                 })
                 .ToListAsync();
 
             return Ok(reports);
         }
 
-        // === POST: /api/report ===
+        // === [POST] dodanie nowego raportu ===
         [HttpPost]
         public async Task<IActionResult> AddReport([FromBody] CreateReportRequest request)
         {
@@ -73,15 +73,61 @@ namespace server.Controllers
                 Longitude = 19.9864,
                 LocationName = "Tauron Arena Kraków",
                 CreatedAt = DateTime.UtcNow,
-                ConfirmationsCount = 0,
-                RejectionsCount = 0,
-                UserId = userId
+                IsActive = true,
+                UserId = userId,
+                RideId = request.RideId
             };
 
             _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
-            return Ok(report);
+            // === AKTUALIZACJA OPÓŹNIENIA (niezależnie od typu incydentu) ===
+            if (request.RideId.HasValue && request.DelayMinutes.HasValue && request.DelayMinutes.Value > 0)
+            {
+                var ride = await _context.Rides
+                    .Include(r => r.Reports)
+                    .FirstOrDefaultAsync(r => r.Id == request.RideId.Value);
+
+                if (ride != null)
+                {
+                    // Pobierz wszystkie raporty z wypełnionym DelayMinutes > 0
+                    var delayReports = await _context.Reports
+                        .Where(r => r.RideId == ride.Id && r.Description != null)
+                        .ToListAsync();
+
+                    // średnia ze wszystkich zgłoszeń z DelayMinutes
+                    var delays = delayReports
+                        .Select(r =>
+                        {
+                            return request.DelayMinutes.Value;
+                        })
+                        .ToList();
+
+                    // Dodaj bieżące opóźnienie z formularza
+                    delays.Add(request.DelayMinutes.Value);
+
+                    if (delays.Any())
+                    {
+                        var avgDelay = (int)Math.Round(delays.Average());
+
+                        // Aktualizacja przejazdu
+                        ride.DelayMinutes = avgDelay;
+                        ride.ScheduledArrival = ride.ScheduledArrival.AddMinutes(avgDelay);
+
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return Ok(new
+            {
+                message = "Zgłoszenie dodane pomyślnie.",
+                report.Id,
+                report.Title,
+                report.IncidentType,
+                report.LineNumber,
+                report.CreatedAt
+            });
         }
 
     }

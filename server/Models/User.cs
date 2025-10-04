@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace server.Models
 {
     public enum UserRole
@@ -11,30 +13,33 @@ namespace server.Models
     {
         public int Id { get; set; }
 
-        // === PODSTAWOWE DANE LOGOWANIA ===
-        public required string Email { get; set; }
-        public required string PasswordHash { get; set; }
+        // === LOGOWANIE ===
+        [Required]
+        public string Email { get; set; } = string.Empty;
 
-        // === DANE PROFILOWE ===
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
+
+        // === PROFIL ===
         public string? DisplayName { get; set; }
         public string? City { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // === SYSTEM ROLI I WERYFIKACJI ===
+        // === ROLE I WERYFIKACJA ===
         public UserRole Role { get; set; } = UserRole.Passenger;
         public bool IsEmailConfirmed { get; set; } = false;
         public string? EmailConfirmationToken { get; set; }
 
-        // === SYSTEM NAGRÓD I AKTYWNOŚCI ===
+        // === REPUTACJA ===
         public int ReputationPoints { get; set; } = 0;
         public int ReportsCount { get; set; } = 0;
 
-        // === RESETOWANIE HASŁA ===
+        // === RESET HASŁA ===
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpires { get; set; }
 
         // === RELACJE ===
-        public List<Report> Reports { get; set; } = new();     // lista zgłoszeń użytkownika
-        public List<Verification> Verifications { get; set; } = new(); // np. głosy potwierdzające wiarygodność zgłoszeń
+        public List<Report> Reports { get; set; } = new();
+        public List<Verification> Verifications { get; set; } = new();
     }
 }

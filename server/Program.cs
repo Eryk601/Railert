@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // ===========================
-// 🔐 JWT konfiguracja
+// JWT konfiguracja
 // ===========================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -26,7 +26,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // ===========================
-// 🧭 Swagger konfiguracja
+// Swagger konfiguracja
 // ===========================
 builder.Services.AddSwaggerGen(c =>
 {
@@ -65,7 +65,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ===========================
-// 💾 Baza danych + serwisy
+// Baza danych + serwisy
 // ===========================
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -77,7 +77,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 // ===========================
-// 🌐 CORS (dla frontendu React)
+// CORS (dla frontendu React)
 // ===========================
 builder.Services.AddCors(options =>
 {
@@ -91,11 +91,12 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHostedService<JourneyBackgroundService>();
 
 var app = builder.Build();
 
 // ===========================
-// 🚀 Middleware
+// Middleware
 // ===========================
 if (app.Environment.IsDevelopment())
 {
@@ -128,7 +129,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Błąd podczas inicjalizacji bazy danych: {ex.Message}");
+        Console.WriteLine($"Błąd podczas inicjalizacji bazy danych: {ex.Message}");
     }
 }
 

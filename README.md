@@ -13,3 +13,8 @@ Reset bazy danych
 
 1. dotnet ef database drop --force
 2. dotnet ef database update
+
+Biblioteki:
+
+1. npm install leaflet react-leaflet
+2. npm install date-fns

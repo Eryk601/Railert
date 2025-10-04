@@ -38,7 +38,7 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             var frontendUrl = _config["Urls:Frontend"] ?? "http://localhost:3000";
-            return Redirect($"{frontendUrl}/login?status=verified");
+            return Redirect($"{frontendUrl}/logowanie?status=verified");
         }
 
         // === REJESTRACJA ===
@@ -109,7 +109,7 @@ namespace server.Controllers
             await _context.SaveChangesAsync();
 
             var frontendUrl = _config["Urls:Frontend"] ?? "http://localhost:3000";
-            var resetUrl = $"{frontendUrl}/reset-password?token={token}";
+            var resetUrl = $"{frontendUrl}/resetuj-haslo?token={token}";
             var body = $"Kliknij, aby zresetować hasło: <a href='{resetUrl}'>Resetuj hasło</a>";
 
             await _emailService.SendEmailAsync(user.Email, "Resetowanie hasła w Railert", body);

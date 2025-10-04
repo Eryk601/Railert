@@ -12,9 +12,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { pl } from "date-fns/locale";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -61,7 +63,10 @@ export default function HomePage() {
             src={iconUser}
             alt="User"
             className="clickable-icon"
-            onClick={() => navigate("/login")}
+            onClick={() => {
+              if (user) navigate("/profil"); // jeśli zalogowany
+              else navigate("/logowanie"); // jeśli nie
+            }}
           />
           <img src={iconMenu} alt="Menu" className="icon" />
         </div>

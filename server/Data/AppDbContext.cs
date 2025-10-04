@@ -29,28 +29,21 @@ namespace server.Data
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Verifications)
-                .WithOne(v => v.User)
-                .HasForeignKey(v => v.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // === Report ===
             modelBuilder.Entity<Report>()
                 .HasIndex(r => new { r.TransportType, r.LineNumber });
-            // pozwala szybciej wyszukiwać raporty po typie transportu i linii
-
-            modelBuilder.Entity<Report>()
-                .HasMany(r => r.Verifications)
-                .WithOne(v => v.Report)
-                .HasForeignKey(v => v.ReportId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // === Verification ===
             modelBuilder.Entity<Verification>()
                 .HasIndex(v => new { v.UserId, v.ReportId })
-                .IsUnique();
-            // jeden użytkownik może potwierdzić/odrzucić dane zgłoszenie tylko raz
+                .IsUnique(); // użytkownik może głosować tylko raz na dane zgłoszenie
+
+            modelBuilder.Entity<Verification>()
+                .HasOne(v => v.Report)
+                .WithMany()
+                .HasForeignKey(v => v.ReportId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
+
     }
 }

@@ -226,6 +226,7 @@
 
 .search-btn:hover {
   background: #0453a1;
+  transform: scale(1.02);
 }
 
 /* =========================================
@@ -358,6 +359,7 @@
 
 .auth-button:hover {
   background-color: #0453a1;
+  transform: scale(1.02);
 }
 
 .auth-link {
@@ -417,7 +419,6 @@
   cursor: default;
 }
 
-/* DANE OSOBOWE */
 .profile-grid-user {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
@@ -484,6 +485,7 @@
 
 .auth-button-user:hover {
   background: #0453a1;
+  transform: scale(1.02);
 }
 
 /* =========================================
@@ -534,6 +536,254 @@
     opacity: 0;
     transform: translate(-50%, -10px);
   }
+}
+
+/* =========================================
+   === DODAJ ALERT (NOWY DESIGN) ===
+========================================= */
+
+.alert-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  min-height: 130vh;
+}
+
+.alert-card {
+  background: #ffffff;
+  border-radius: 10px;
+  border: 2px solid #006496;
+  box-shadow: 0px 5px 20px rgba(0, 100, 150, 0.15);
+  padding: 40px 50px;
+  max-width: 520px;
+  width: 100%;
+  transition: all 0.3s ease;
+  animation: fadeInCard 0.6s ease;
+}
+
+@keyframes fadeInCard {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid #006496;
+  padding-bottom: 10px;
+  margin-bottom: 35px;
+}
+
+.alert-header h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #0453a1;
+}
+
+.alert-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.alert-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.alert-form label {
+  font-weight: bold;
+  color: #003f66;
+}
+
+.alert-form input,
+.alert-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #006496;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.alert-form textarea {
+  width: 100.5%;
+  padding: 10px;
+  border: 1px solid #006496;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.alert-form input:focus,
+.alert-form select:focus,
+.alert-form textarea:focus {
+  border-color: #0453a1;
+  box-shadow: 0 0 4px rgba(0, 100, 150, 0.3);
+}
+
+.alert-form textarea {
+  height: 80px;
+  max-height: 80px;
+}
+
+.alert-form textarea:focus::after {
+  content: "";
+}
+
+.alert-form label {
+  font-weight: bold;
+  color: #003f66;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.alert-btn {
+  background: #006496;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.alert-btn:hover {
+  background: #0453a1;
+  transform: scale(1.02);
+}
+
+.alert-cancel {
+  background: transparent;
+  color: #f2492f;
+  border: none;
+  text-decoration: underline;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.alert-cancel:hover {
+  font-weight: bold;
+}
+
+/* =========================================
+   === RIDE ===
+========================================= */
+
+.ride-panel {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #001a33;
+  color: #e6f3ff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 102, 204, 0.3);
+  border: 2px solid #00b3ff;
+}
+
+.ride-panel h2 {
+  text-align: center;
+  color: #00b3ff;
+  margin-bottom: 20px;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+.ride-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ride-table th {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 2px solid #00b3ff;
+}
+
+.ride-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #004c80;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.status-dot.green {
+  background-color: #00e676;
+}
+.status-dot.yellow {
+  background-color: #ffeb3b;
+}
+.status-dot.red {
+  background-color: #ff3b3b;
+}
+.status-dot.cancelled {
+  background-color: #777;
+}
+
+/* =========================================
+   === ADMIN I MODERATOR ===
+========================================= */
+
+.dashboard-container {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 30px;
+  border: 2px solid #006496;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.dashboard-heading {
+  color: #0453a1;
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 25px;
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dashboard-grid button {
+  background: #006496;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-grid button:hover {
+  background: #0453a1;
+  transform: scale(1.03);
 }
 
 html,

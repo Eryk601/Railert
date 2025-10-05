@@ -22,8 +22,8 @@ namespace server.Services
 
                 await journeyService.CheckConnectionsAsync();
 
-                //  sprawdzaj co 5 minut
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
+                //  sprawdzaj co 1 minute
+                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
     }

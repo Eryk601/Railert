@@ -8,6 +8,10 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import ProtectedRoute from "./context/ProtectedRoute";
 import UserProfile from "./pages/UserProfile";
+import AddAlertPage from "./pages/AddAlertPage";
+import RideManager from "./pages/RideManager";
+import AdminProfile from "./pages/AdminProfile";
+import ModeratorProfile from "./pages/ModeratorProfile";
 
 import "./styles/main.css";
 
@@ -25,8 +29,42 @@ function App() {
           <Route
             path="/profil"
             element={
-              <ProtectedRoute roles={["User", "Admin", "Superadmin"]}>
+              <ProtectedRoute roles={["Passenger", "Admin", "Moderator"]}>
                 <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dodaj-alert"
+            element={
+              <ProtectedRoute roles={["Passenger", "Moderator", "Admin"]}>
+                <AddAlertPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/zarzadzanie-przejazdami"
+            element={
+              <ProtectedRoute roles={["Admin", "Moderator"]}>
+                <RideManager />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profil-admina"
+            element={
+              <ProtectedRoute roles={["Admin"]}>
+                <AdminProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/profil-moderatora"
+            element={
+              <ProtectedRoute roles={["Moderator"]}>
+                <ModeratorProfile />
               </ProtectedRoute>
             }
           />

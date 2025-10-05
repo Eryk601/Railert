@@ -16,7 +16,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth(); // dodane loading
 
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -50,6 +50,11 @@ export default function HomePage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // jeśli auth się jeszcze ładuje – zapobiega błędnemu przekierowaniu
+  if (loading) {
+    return <p style={{ textAlign: "center", marginTop: 40 }}>Ładowanie...</p>;
+  }
+
   return (
     <div className="home-container">
       {/* === HEADER === */}
@@ -64,11 +69,13 @@ export default function HomePage() {
             alt="User"
             className="clickable-icon"
             onClick={() => {
-              if (user) navigate("/profil"); // jeśli zalogowany
-              else navigate("/logowanie"); // jeśli nie
+              if (!user) navigate("/logowanie");
+              else if (user.role === "Admin") navigate("/profil-admina");
+              else if (user.role === "Moderator")
+                navigate("/profil-moderatora");
+              else navigate("/profil");
             }}
           />
-          <img src={iconMenu} alt="Menu" className="icon" />
         </div>
       </header>
 

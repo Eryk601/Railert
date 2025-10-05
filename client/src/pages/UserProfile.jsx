@@ -10,7 +10,7 @@ export default function UserProfile() {
     <>
       <AuthHeader />
       <div className="profile">
-        <h2 className="profile__title">Panel klienta</h2>
+        <h2 className="profile__title">Panel podróżnika</h2>
 
         <div className="profile-grid-user">
           <section className="card-profile-user">
@@ -32,6 +32,13 @@ export default function UserProfile() {
             </div>
 
             <div className="user__actions">
+              <button
+                className="auth-button-user"
+                onClick={() => navigate("/dodaj-alert")}
+              >
+                Dodaj alert
+              </button>
+
               <button
                 className="auth-button-user"
                 onClick={() => navigate("/zmien-haslo")}

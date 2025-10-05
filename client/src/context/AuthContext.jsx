@@ -20,9 +20,9 @@ function parseRoleFromJwt(token) {
   }
 }
 
-function resolveRole({ role, isSuperadmin, isAdmin, token } = {}) {
+function resolveRole({ role, isModerator, isAdmin, token } = {}) {
   if (role) return role;
-  if (isSuperadmin) return "Superadmin";
+  if (isModerator) return "Moderator";
   if (isAdmin) return "Admin";
   const jwtRole = token ? parseRoleFromJwt(token) : null;
   if (jwtRole) {
@@ -35,7 +35,6 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Funkcja do pobrania świeżych danych usera
   const refreshUser = async (token) => {
     try {
       const res = await fetch("https://localhost:7265/api/User/me", {
@@ -70,7 +69,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   const login = async ({ token }) => {
-    await refreshUser(token); // zamiast powielać kod
+    await refreshUser(token);
   };
 
   const logout = () => {

@@ -1,33 +1,38 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import alertRed from "../assets/alertred.png";
+import alertYellow from "../assets/alertyellow.png";
 
 const API_URL = "https://localhost:7265/api/report";
 
-// 🟢 Ikony dla różnych typów transportu
+// ikony alertów
 const icons = {
-  Bus: new L.Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/2972/2972185.png",
+  red: new L.Icon({
+    iconUrl: alertRed,
     iconSize: [35, 35],
   }),
-  Tram: new L.Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/858/858373.png",
-    iconSize: [35, 35],
-  }),
-  Train: new L.Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/1150/1150745.png",
-    iconSize: [35, 35],
-  }),
-  Metro: new L.Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/622/622669.png",
-    iconSize: [35, 35],
-  }),
-  Other: new L.Icon({
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/25/25694.png",
+  yellow: new L.Icon({
+    iconUrl: alertYellow,
     iconSize: [35, 35],
   }),
 };
+
+// komponent pomocniczy do dopasowania widoku
+function FitBounds({ reports }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (reports.length === 0) return;
+    const bounds = L.latLngBounds(
+      reports.map((r) => [r.latitude, r.longitude])
+    );
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }, [reports, map]);
+
+  return null;
+}
 
 export default function MapPage() {
   const [reports, setReports] = useState([]);
@@ -42,31 +47,55 @@ export default function MapPage() {
   return (
     <div className="map-wrapper">
       <MapContainer
-        center={[50.0676, 19.9864]} // Tauron Arena Kraków
-        zoom={13}
+        center={[52, 19]} // środek Polski
+        zoom={6}
+        style={{ height: "70vh", width: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {reports.map((r) => (
-          <Marker
-            key={r.id}
-            position={[r.latitude, r.longitude]}
-            icon={icons[r.transportType] || icons.Other}
-          >
-            <Popup>
-              <b>{r.title || "Zgłoszenie"}</b>
-              <br />
-              <b>Linia:</b> {r.lineNumber} <br />
-              <b>Typ:</b> {r.incidentType} <br />
-              <b>Opis:</b> {r.description} <br />
-              <b>Lokalizacja:</b> {r.locationName} <br />
-              <b>Zgłosił:</b> {r.userEmail}
-            </Popup>
-          </Marker>
-        ))}
+        <FitBounds reports={reports} />
+
+        {reports.map((r) => {
+          // oblicz opóźnienie w minutach
+          const delayMinutes = Math.abs(
+            (new Date(r.scheduledArrival) - new Date(r.createdAt)) / 60000
+          );
+
+          const icon = delayMinutes >= 30 ? icons.red : icons.yellow;
+
+          return (
+            <Marker key={r.id} position={[r.latitude, r.longitude]} icon={icon}>
+              <Popup>
+                <b>{r.title || "Zgłoszenie"}</b>
+                <br />
+                <b>Linia:</b> {r.lineNumber} <br />
+                <b>Opis:</b> {r.description} <br />
+                <b>Lokalizacja:</b> {r.locationName} <br />
+                <b>Ilość potwierdzeń:</b> {r.confirmationsCount} <br />
+                <b>Data zgłoszenia:</b>{" "}
+                {r.createdAt
+                  ? new Date(r.createdAt).toLocaleString("pl-PL", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })
+                  : "—"}
+                <br />
+                <b>Przewidywany przyjazd:</b>{" "}
+                {r.scheduledArrival
+                  ? new Date(r.scheduledArrival).toLocaleString("pl-PL", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })
+                  : "—"}
+                <br />
+                <b>Zgłosił:</b> {r.userDisplayName}
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );

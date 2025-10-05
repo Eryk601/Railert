@@ -1,21 +1,44 @@
-Tworzenie bazy danych
+Railert
 
-1. Utwóż bazę danych w pgadmin 4 o nazwie SzklanaStrefaDB
-2. Edytuj plik server/appsettings.json i ustaw swoje dane do PostgreSQL(port, hasło)
-3. W termianlu w katalogu server/ uruchom dotnet ef database update
+Railert to aplikacja, która umożliwia pasażerom zgłaszanie opóźnień i utrudnień w transporcie publicznym oraz przeglądanie aktualnych raportów od innych użytkowników. System automatycznie analizuje podróże i ostrzega o możliwych problemach z przesiadkami, pomagając w planowaniu trasy. Projekt został stworzony przez zespół Drift w ramach hackathonu HackYeah 2025 w ciągu 24 godzin.
 
-Migracja bazy dancyh
+Jak uruchomić aplikację
+Backend (API – ASP.NET Core)
+Zainstaluj .NET 8 SDK i PostgreSQL.
+W folderze server/ uruchom:
 
-1. dotnet ef migrations add NazwaMigracji
-2. dotnet ef database update
+dotnet ef database update
+dotnet run
 
-Reset bazy danych
+Otwórz przeglądarkę i przejdź pod adres:
+https://localhost:7265/swagger
 
-1. dotnet ef database drop --force
-2. dotnet ef database update
+gdzie znajduje się interfejs testowy API.
 
-Biblioteki:
+Frontend (React)
+Przejdź do folderu client/.
+Zainstaluj zależności i uruchom projekt:
 
-1. npm install leaflet react-leaflet
-2. npm install date-fns
-3. npm install react-icons
+npm install
+npm start
+
+Aplikacja uruchomi się pod adresem:
+http://localhost:3000
+
+Konta testowe
+Możesz zalogować się jednym z gotowych użytkowników:
+Rola	Email	Hasło	Uprawnienia
+
+Użytkownik	user	user	Dodawanie raportów, tworzenie podróży
+
+Moderator	moderator	moderator	Zatwierdzanie i usuwanie raportów
+
+Administrator	admin	admin	Pełny dostęp do systemu i danych
+
+Cel aplikacji
+Celem Railerta jest umożliwienie pasażerom szybkiego reagowania na opóźnienia oraz wymiany informacji w czasie rzeczywistym.
+W przyszłości planowana jest integracja z API PKP Intercity, predykcja opóźnień przy użyciu AI oraz rozszerzenie o aplikację mobilną.
+
+
+Celem Railerta jest umożliwienie pasażerom szybkiego reagowania na opóźnienia oraz wymiany informacji w czasie rzeczywistym.
+W przyszłości planowana jest integracja z API PKP Intercity, predykcja opóźnień przy użyciu AI oraz rozszerzenie o aplikację mobilną.

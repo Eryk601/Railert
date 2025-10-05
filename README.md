@@ -18,3 +18,4 @@ Biblioteki:
 
 1. npm install leaflet react-leaflet
 2. npm install date-fns
+3. npm install react-icons

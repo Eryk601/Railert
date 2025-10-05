@@ -1,7 +1,6 @@
 import "../styles/main.css";
 import logo from "../assets/logo2.png";
 import iconUser from "../assets/user.png";
-import iconMenu from "../assets/menu.png";
 import iconLocation from "../assets/location.png";
 import iconSwap from "../assets/swap.png";
 import iconCalendar from "../assets/calendar.png";
@@ -69,36 +68,6 @@ export default function HomePage() {
   // jeśli auth się jeszcze ładuje – zapobiega błędnemu przekierowaniu
   if (loading) {
     return <p style={{ textAlign: "center", marginTop: 40 }}>Ładowanie...</p>;
-  }
-
-  async function handleSearch() {
-    if (!from || !to) {
-      alert("Podaj stację początkową i końcową!");
-      return;
-    }
-
-    try {
-      const searchDate = date ? new Date(date) : new Date();
-      if (time) {
-        const [hours, minutes] = time.split(":");
-        searchDate.setHours(hours);
-        searchDate.setMinutes(minutes);
-      }
-
-      const res = await fetch(
-        `https://localhost:7265/api/Ride/search?from=${encodeURIComponent(
-          from
-        )}&to=${encodeURIComponent(to)}&datetime=${encodeURIComponent(
-          searchDate.toISOString()
-        )}`
-      );
-
-      const data = await res.json();
-      console.log("Wyniki wyszukiwania:", data);
-      // tu potem wstawisz np. setRides(data) i wyświetlanie tabeli
-    } catch (err) {
-      console.error("Błąd wyszukiwania:", err);
-    }
   }
 
   async function handleSearch() {
@@ -323,7 +292,7 @@ export default function HomePage() {
                   Znalezione przejazdy
                 </h3>
 
-                <table className="ride-table">
+                <table className="search-table">
                   <thead>
                     <tr>
                       <th>Linia</th>

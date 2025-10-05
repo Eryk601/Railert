@@ -1,19 +1,20 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./auth/LoginPage";
+import RegisterPage from "./auth/RegisterPage";
 import AuthProvider from "./context/AuthContext";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
+import ForgotPasswordPage from "./password/ForgotPasswordPage";
+import ResetPasswordPage from "./password/ResetPasswordPage";
+import ChangePasswordPage from "./password/ChangePasswordPage";
 import ProtectedRoute from "./context/ProtectedRoute";
-import UserProfile from "./pages/UserProfile";
+import UserProfile from "./user/UserProfile";
 import AddAlertPage from "./pages/AddAlertPage";
 import RideManager from "./pages/RideManager";
-import AdminProfile from "./pages/AdminProfile";
-import ModeratorProfile from "./pages/ModeratorProfile";
-import UserManager from "./pages/UserManager";
-import JourneyPlanner from "./pages/JourneyPlanner";
+import AdminProfile from "./admin/AdminProfile";
+import ModeratorProfile from "./moderator/ModeratorProfile";
+import UserManager from "./admin/UserManager";
+import JourneyPlanner from "./user/JourneyPlanner";
+import CheckAlert from "./moderator/CheckAlert";
 
 import "./styles/main.css";
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/resetuj-haslo" element={<ResetPasswordPage />} />
           <Route path="/zmien-haslo" element={<ChangePasswordPage />} />
           <Route path="/zarzadzanie-uzytkownikami" element={<UserManager />} />
+          <Route path="/sprawdzanie-alertów" element={<CheckAlert />} />
           <Route
             path="/profil"
             element={

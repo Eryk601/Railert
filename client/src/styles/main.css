@@ -5,7 +5,7 @@
 .home-container {
   font-family: "Segoe UI", sans-serif;
   background: #f7f7f7;
-  min-height: 130vh;
+  min-height: 150vh;
 }
 
 /* =========================================
@@ -243,7 +243,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 1050px;
+  max-width: 845px;
 }
 
 .map-section .leaflet-container {
@@ -261,7 +261,7 @@
 
 body {
   background-attachment: fixed;
-  min-height: 100vh;
+  min-height: 120vh;
 }
 
 /* === KARTA FORMULARZA === */
@@ -331,8 +331,16 @@ body {
 /* === FORMULARZE === */
 .auth-form,
 .auth-form-f,
-.auth-form-c,
 .auth-form-r {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+  width: 100%;
+  animation: fadeSlide 0.4s ease;
+}
+
+.auth-form-c {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -355,10 +363,20 @@ body {
 /* === INPUTY === */
 .auth-form input,
 .auth-form-f input,
-.auth-form-c input,
 .auth-form-r input {
-  width: 100%;
-  padding: 12px 42px 12px 14px; /* miejsce na oko */
+  width: 82.5%;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid #006496;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  outline: none;
+  background-color: #eef6ff;
+}
+
+.auth-form-c input {
+  width: 85%;
+  padding: 12px 42px 12px 14px;
   border: 1px solid #006496;
   border-radius: 6px;
   font-size: 15px;
@@ -384,7 +402,7 @@ body {
 .password-input img {
   position: absolute;
   right: 14px;
-  top: 50%;
+  top: 65%;
   transform: translateY(-50%);
   width: 18px;
   opacity: 0.7;
@@ -444,7 +462,6 @@ body {
   }
 }
 
-
 /* =========================================
    === PROFIL UŻYTKOWNIKA ===
 ========================================= */
@@ -470,8 +487,14 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .profile-title {
@@ -594,7 +617,6 @@ body {
   transform: scale(1.03);
 }
 
-
 /* =========================================
    === ALERTY ===
 ========================================= */
@@ -646,7 +668,7 @@ body {
 }
 
 /* =========================================
-   === DODAJ ALERT (NOWY DESIGN) ===
+   === DODAJ ALERT ===
 ========================================= */
 
 .alert-page {
@@ -812,8 +834,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-
-
 .ride-table th {
   text-align: left;
   padding: 10px;
@@ -825,24 +845,78 @@ body {
   border-bottom: 1px solid #004c80;
 }
 
-.status-dot {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+/* === WYNIKI WYSZUKIWANIA === */
+.results-container {
+  width: 100%;
+  margin-top: 20px;
 }
 
-.status-dot.green {
-  background-color: #00e676;
+.search-table,
+.ride-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-top: 10px;
+  border-spacing: 0;
 }
+
+.search-table th,
+.search-table td,
+.ride-table th,
+.ride-table td {
+  text-align: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid #0077b6;
+  vertical-align: middle;
+}
+
+.search-table th,
+.ride-table th {
+  color: #004c80;
+  font-weight: bold;
+  border-bottom: 2px solid #0077b6;
+  background: #eaf6ff;
+}
+
+/* === STATUS DOT – CENTROWANIE === */
+.status-dot {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin: 0 auto;
+  position: relative;
+  top: 2px;
+}
+
+.status-dot-r {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin: 0 auto;
+  position: relative;
+  top: 20px;
+}
+
+/* Kolory statusu */
+.status-dot-r.green,
+.status-dot.green {
+  background-color: #00c853;
+}
+.status-dot-r.yellow,
 .status-dot.yellow {
   background-color: #ffeb3b;
 }
+.status-dot-r.red,
 .status-dot.red {
-  background-color: #ff3b3b;
+  background-color: #d32f2f;
 }
+.status-dot-r.cancelled,
 .status-dot.cancelled {
-  background-color: #777;
+  background-color: #9e9e9e;
 }
 
 /* =========================================
@@ -952,7 +1026,78 @@ body,
   background-color: #b71c1c;
 }
 
-/* === PLANOWANIE PODRÓŻY === */
+/* =========================================
+   === PRZYCISKI W TABELI UŻYTKOWNIKÓW ===
+========================================= */
+.table-btns {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+  min-width: 85px;
+  justify-content: center;
+}
+
+/* === Edytuj === */
+.table-btn.edit {
+  background: #007bff;
+  border: 1px solid #0064cc;
+}
+.table-btn.edit:hover {
+  background: #0453a1;
+  transform: scale(1.05);
+}
+
+/* === Zapisz === */
+.table-btn.save {
+  background: #00a651;
+  border: 1px solid #008c45;
+}
+.table-btn.save:hover {
+  background: #009245;
+  transform: scale(1.05);
+}
+
+/* === Anuluj === */
+.table-btn.cancel {
+  background: #d32f2f;
+  border: 1px solid #b71c1c;
+}
+.table-btn.cancel:hover {
+  background: #b71c1c;
+  transform: scale(1.05);
+}
+
+/* === Wyrównanie kolumny "Akcje" === */
+.ride-table td:last-child {
+  display: flex;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.ride-table td:last-child .table-btn {
+  margin: 2px;
+}
+
+/* =========================================
+   === PLANOWANIE PODRÓŻY ===
+========================================= */
 .journey-container {
   max-width: 1100px;
   margin: 40px auto;
@@ -1044,3 +1189,100 @@ body,
   margin-left: 8px;
 }
 
+/* === PANEL ALERTÓW – DOPASOWANY DO PANELU UŻYTKOWNIKÓW === */
+.alerts-panel {
+  max-width: 1000px;
+  margin: 40px auto;
+  background: #001a33;
+  color: #e6f3ff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 102, 204, 0.3);
+  border: 2px solid #00b3ff;
+}
+
+.alerts-panel h2 {
+  text-align: center;
+  color: #00b3ff;
+  margin-bottom: 20px;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+/* === TABELA ALERTÓW – TAK SAMO JAK TABELA UŻYTKOWNIKÓW === */
+.alerts-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.alerts-table th,
+.alerts-table td {
+  text-align: center;
+  padding: 12px 10px;
+  border-bottom: 1px solid #004c80;
+  vertical-align: middle;
+}
+
+.alerts-table th {
+  color: #004c80;
+  font-weight: bold;
+  border-bottom: 2px solid #00b3ff;
+  background: #eaf6ff;
+}
+
+/* === PRZYCISKI AKCJI === */
+.alerts-table td:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.alerts-table button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+}
+
+.alerts-table button.accept {
+  background: #00a651;
+  border: 1px solid #008c45;
+}
+.alerts-table button.accept:hover {
+  background: #009245;
+  transform: scale(1.05);
+}
+
+.alerts-table button.delete {
+  background: #d32f2f;
+  border: 1px solid #b71c1c;
+}
+.alerts-table button.delete:hover {
+  background: #b71c1c;
+  transform: scale(1.05);
+}
+
+/* === STATUS DOT (CENTROWANIE) === */
+.alerts-table .status-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.alerts-table .status-dot.green {
+  background-color: #00c853;
+}
+
+.alerts-table .status-dot.cancelled {
+  background-color: #9e9e9e;
+}

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
+import { FaSave, FaTimes, FaEdit } from "react-icons/fa";
 import "../styles/main.css";
 
 export default function UserManager() {
@@ -11,11 +12,8 @@ export default function UserManager() {
   const [newReputation, setNewReputation] = useState("");
   const API = "https://localhost:7265/api/User/all";
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  async function fetchUsers() {
+  // ✅ używamy useCallback, aby uniknąć ostrzeżenia ESLint
+  const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch(API, {
         headers: { Authorization: `Bearer ${user?.token}` },
@@ -27,7 +25,11 @@ export default function UserManager() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [API, user?.token]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]); // ✅ dodano fetchUsers jako zależność
 
   async function handleReputationSave(userId) {
     try {
@@ -62,10 +64,24 @@ export default function UserManager() {
     }
   }
 
+  // === WYZNACZANIE ŚCIEŻKI POWROTU W ZALEŻNOŚCI OD ROLI ===
+  function getReturnPath() {
+    if (!user) return "/";
+    switch (user.role) {
+      case "Admin":
+        return "/profil-admina";
+      case "Moderator":
+        return "/profil-moderatora";
+      case "Passenger":
+      default:
+        return "/profil-uzytkownika";
+    }
+  }
+
   return (
     <div className="ride-panel">
       {/* === PRZYCISK POWROTU === */}
-      <Link to="/profil-admina" className="back-btn">
+      <Link to={getReturnPath()} className="back-btn">
         ← Powrót
       </Link>
 
@@ -121,29 +137,29 @@ export default function UserManager() {
 
                 <td>
                   {editingUserId === u.id ? (
-                    <>
+                    <div className="table-btns">
                       <button
-                        className="small-btn save-btn"
+                        className="table-btn save"
                         onClick={() => handleReputationSave(u.id)}
                       >
-                        Zapisz
+                        <FaSave /> Zapisz
                       </button>
                       <button
-                        className="small-btn cancel-btn"
+                        className="table-btn cancel"
                         onClick={() => setEditingUserId(null)}
                       >
-                        Anuluj
+                        <FaTimes /> Anuluj
                       </button>
-                    </>
+                    </div>
                   ) : (
                     <button
-                      className="small-btn edit-btn"
+                      className="table-btn edit"
                       onClick={() => {
                         setEditingUserId(u.id);
                         setNewReputation(u.reputationPoints);
                       }}
                     >
-                      ✏️
+                      <FaEdit /> Edytuj
                     </button>
                   )}
                 </td>

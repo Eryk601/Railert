@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AuthHeader from "../components/AuthHeader";
 import Alert from "../components/Alert";
-import trainIcon from "../assets/location.png"; // dodaj małą ikonkę pociągu do assets
+import trainIcon from "../assets/transport.png";
 
 export default function AddAlertPage() {
   const { user } = useAuth();
@@ -35,6 +35,18 @@ export default function AddAlertPage() {
     return null;
   }
 
+  // 🔹 Funkcja określająca stronę powrotu na podstawie roli
+  const getReturnPath = () => {
+    switch (user?.role) {
+      case "Admin":
+        return "/profil-admina";
+      case "Moderator":
+        return "/profil-moderatora";
+      default:
+        return "/profil"; // Passenger
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -62,7 +74,9 @@ export default function AddAlertPage() {
       if (!res.ok) throw new Error(await res.text());
 
       setAlert({ message: "✅ Alert został dodany!", type: "success" });
-      setTimeout(() => navigate("/profil"), 1500);
+
+      // 🔹 Przekierowanie po udanym dodaniu w zależności od roli
+      setTimeout(() => navigate(getReturnPath()), 1500);
     } catch (err) {
       setAlert({
         message: "❌ Nie udało się dodać alertu. " + (err.message || ""),
@@ -88,7 +102,7 @@ export default function AddAlertPage() {
         <div className="alert-card">
           <div className="alert-header">
             <img src={trainIcon} alt="Alert" className="alert-icon" />
-            <h2>DODAJ ALERT</h2>
+            <h2> DODAJ ALERT</h2>
           </div>
 
           <form className="alert-form" onSubmit={handleSubmit}>
@@ -152,7 +166,7 @@ export default function AddAlertPage() {
                 onChange={(e) =>
                   setForm((prev) => ({
                     ...prev,
-                    description: e.target.value.slice(0, 200), // limit 200 znaków
+                    description: e.target.value.slice(0, 200),
                   }))
                 }
                 placeholder="Szczegóły zdarzenia..."
@@ -201,7 +215,7 @@ export default function AddAlertPage() {
             <button
               type="button"
               className="alert-cancel"
-              onClick={() => navigate("/profil")}
+              onClick={() => navigate(getReturnPath())}
             >
               Anuluj
             </button>

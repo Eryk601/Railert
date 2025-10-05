@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom"; // ⬅️ dodaj to
+import { Link } from "react-router-dom";
 import "../styles/main.css";
 
 export default function RideManager() {
@@ -9,13 +9,8 @@ export default function RideManager() {
   const [loading, setLoading] = useState(true);
   const API = "https://localhost:7265/api/Ride";
 
-  useEffect(() => {
-    fetchRides();
-    const interval = setInterval(fetchRides, 15000); // odśwież co 15s
-    return () => clearInterval(interval);
-  }, []);
-
-  async function fetchRides() {
+  // ✅ używamy useCallback, aby uniknąć ostrzeżeń ESLint
+  const fetchRides = useCallback(async () => {
     try {
       const res = await fetch(API, {
         headers: { Authorization: `Bearer ${user?.token}` },
@@ -27,7 +22,13 @@ export default function RideManager() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [API, user?.token]);
+
+  useEffect(() => {
+    fetchRides();
+    const interval = setInterval(fetchRides, 15000);
+    return () => clearInterval(interval);
+  }, [fetchRides]); // ✅ teraz wszystko jest zgodne z zasadami hooków
 
   function getStatusColor(delay, cancelled) {
     if (cancelled) return "cancelled";
@@ -36,10 +37,24 @@ export default function RideManager() {
     return "green";
   }
 
+  // === WYZNACZANIE ŚCIEŻKI POWROTU W ZALEŻNOŚCI OD ROLI ===
+  function getReturnPath() {
+    if (!user) return "/";
+    switch (user.role) {
+      case "Admin":
+        return "/profil-admina";
+      case "Moderator":
+        return "/profil-moderatora";
+      case "Passenger":
+      default:
+        return "/profil-uzytkownika";
+    }
+  }
+
   return (
     <div className="ride-panel">
       {/* === PRZYCISK POWROTU === */}
-      <Link to="/profil-admina" className="back-btn">
+      <Link to={getReturnPath()} className="back-btn">
         ← Powrót
       </Link>
 
@@ -69,7 +84,7 @@ export default function RideManager() {
                 <td>{r.delayMinutes > 0 ? `+${r.delayMinutes} min` : "—"}</td>
                 <td>
                   <span
-                    className={`status-dot ${getStatusColor(
+                    className={`status-dot-r ${getStatusColor(
                       r.delayMinutes,
                       r.isCancelled
                     )}`}

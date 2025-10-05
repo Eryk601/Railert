@@ -19,7 +19,6 @@ namespace server.Controllers
             _context = context;
         }
 
-        // [POST] /api/journey - tworzy podróż użytkownika z listą RideId
         [HttpPost]
         public async Task<IActionResult> CreateJourney([FromBody] List<int> rideIds)
         {
@@ -57,7 +56,6 @@ namespace server.Controllers
             });
         }
 
-        // [GET] /api/journey/my
         [HttpGet("my")]
         public async Task<IActionResult> GetMyJourneys()
         {

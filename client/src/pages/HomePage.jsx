@@ -13,6 +13,7 @@ import { pl } from "date-fns/locale";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ export default function HomePage() {
   const [passengers, setPassengers] = useState(1);
   const [openDate, setOpenDate] = useState(false);
   const [openTime, setOpenTime] = useState(false);
+  const [rides, setRides] = useState([]);
+  const [loadingRides, setLoadingRides] = useState(false);
 
   const calendarRef = useRef(null);
   const timeRef = useRef(null);
@@ -33,6 +36,19 @@ export default function HomePage() {
     setFrom(to);
     setTo(from);
   };
+
+  const stations = [
+    "Kraków Główny",
+    "Warszawa Centralna",
+    "Katowice",
+    "Wrocław Główny",
+    "Poznań Główny",
+    "Szczecin Główny",
+    "Czerwone Maki",
+    "Plac Centralny",
+    "Bronowice Małe",
+    "Borek Fałęcki",
+  ];
 
   // zamykanie pop-upów po kliknięciu poza
   useEffect(() => {
@@ -55,12 +71,72 @@ export default function HomePage() {
     return <p style={{ textAlign: "center", marginTop: 40 }}>Ładowanie...</p>;
   }
 
+  async function handleSearch() {
+    if (!from || !to) {
+      alert("Podaj stację początkową i końcową!");
+      return;
+    }
+
+    try {
+      const searchDate = date ? new Date(date) : new Date();
+      if (time) {
+        const [hours, minutes] = time.split(":");
+        searchDate.setHours(hours);
+        searchDate.setMinutes(minutes);
+      }
+
+      const res = await fetch(
+        `https://localhost:7265/api/Ride/search?from=${encodeURIComponent(
+          from
+        )}&to=${encodeURIComponent(to)}&datetime=${encodeURIComponent(
+          searchDate.toISOString()
+        )}`
+      );
+
+      const data = await res.json();
+      console.log("Wyniki wyszukiwania:", data);
+      // tu potem wstawisz np. setRides(data) i wyświetlanie tabeli
+    } catch (err) {
+      console.error("Błąd wyszukiwania:", err);
+    }
+  }
+
+  async function handleSearch() {
+    if (!from || !to) {
+      alert("Podaj stację początkową i końcową!");
+      return;
+    }
+
+    setLoadingRides(true);
+    setRides([]);
+
+    try {
+      const res = await fetch(
+        `https://localhost:7265/api/Ride/search?from=${encodeURIComponent(
+          from
+        )}&to=${encodeURIComponent(to)}&time=${encodeURIComponent(time)}`
+      );
+
+      if (!res.ok) throw new Error("Błąd wyszukiwania");
+
+      const data = await res.json();
+      setRides(data);
+    } catch (err) {
+      console.error("Błąd pobierania przejazdów:", err);
+    } finally {
+      setLoadingRides(false);
+    }
+  }
+
   return (
     <div className="home-container">
       {/* === HEADER === */}
       <header className="home-header">
         <div className="logo-section">
-          <img src={logo} alt="Railert Logo" className="logo" />
+          <Link to="/" className="logo-link">
+            <img src={logo} alt="Railert logo" className="logo" />
+            <div className="logo-text"></div>
+          </Link>
         </div>
 
         <div className="user-box">
@@ -89,6 +165,7 @@ export default function HomePage() {
               <div className="input-group">
                 <img src={iconLocation} alt="From" className="icon" />
                 <input
+                  list="station-list"
                   type="text"
                   placeholder="Skąd jedziemy?"
                   value={from}
@@ -109,12 +186,20 @@ export default function HomePage() {
               {/* DOKĄD */}
               <div className="input-group">
                 <input
+                  list="station-list"
                   type="text"
                   placeholder="Dokąd jedziemy?"
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
                 />
               </div>
+
+              {/* LISTA PODPOWIEDZI */}
+              <datalist id="station-list">
+                {stations.map((s, i) => (
+                  <option key={i} value={s} />
+                ))}
+              </datalist>
 
               {/* DATA */}
               <div className="input-group">
@@ -222,8 +307,80 @@ export default function HomePage() {
             </div>
 
             <div className="search-btn-container">
-              <button className="search-btn">Szukaj</button>
+              <button className="search-btn" onClick={handleSearch}>
+                Szukaj
+              </button>
             </div>
+
+            {/* === WYNIKI WYSZUKIWANIA === */}
+            {loadingRides && (
+              <p style={{ textAlign: "center" }}>Ładowanie wyników...</p>
+            )}
+
+            {!loadingRides && rides.length > 0 && (
+              <div className="results-container">
+                <h3 style={{ textAlign: "center", marginTop: 20 }}>
+                  Znalezione przejazdy
+                </h3>
+
+                <table className="ride-table">
+                  <thead>
+                    <tr>
+                      <th>Linia</th>
+                      <th>Trasa</th>
+                      <th>Odjazd</th>
+                      <th>Przyjazd</th>
+                      <th>Opóźnienie</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rides.map((r) => (
+                      <tr key={r.id}>
+                        <td>{r.lineNumber}</td>
+                        <td>
+                          {r.startStation} → {r.endStation}
+                        </td>
+                        <td>
+                          {new Date(r.scheduledDeparture).toLocaleTimeString(
+                            "pl-PL",
+                            { hour: "2-digit", minute: "2-digit" }
+                          )}
+                        </td>
+                        <td>
+                          {new Date(r.scheduledArrival).toLocaleTimeString(
+                            "pl-PL",
+                            { hour: "2-digit", minute: "2-digit" }
+                          )}
+                        </td>
+                        <td>
+                          {r.delayMinutes > 0 ? `+${r.delayMinutes} min` : "—"}
+                        </td>
+                        <td>
+                          <span
+                            className={`status-dot ${
+                              r.isCancelled
+                                ? "cancelled"
+                                : r.delayMinutes >= 30
+                                ? "red"
+                                : r.delayMinutes > 0
+                                ? "yellow"
+                                : "green"
+                            }`}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {!loadingRides && rides.length === 0 && (
+              <p style={{ textAlign: "center", color: "#777", marginTop: 20 }}>
+                Brak połączeń dla podanych parametrów.
+              </p>
+            )}
           </div>
         </section>
 

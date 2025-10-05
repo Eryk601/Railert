@@ -84,7 +84,8 @@ namespace server.Controllers
                 report.User.ReputationPoints--;
             }
 
-            report.UpdateActiveStatus();
+            // report.UpdateActiveStatus();
+            // report.IsActive = true;
             await _context.SaveChangesAsync();
 
             return Ok(new

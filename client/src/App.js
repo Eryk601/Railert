@@ -12,6 +12,8 @@ import AddAlertPage from "./pages/AddAlertPage";
 import RideManager from "./pages/RideManager";
 import AdminProfile from "./pages/AdminProfile";
 import ModeratorProfile from "./pages/ModeratorProfile";
+import UserManager from "./pages/UserManager";
+import JourneyPlanner from "./pages/JourneyPlanner";
 
 import "./styles/main.css";
 
@@ -26,6 +28,7 @@ function App() {
           <Route path="/przypomnij-haslo" element={<ForgotPasswordPage />} />
           <Route path="/resetuj-haslo" element={<ResetPasswordPage />} />
           <Route path="/zmien-haslo" element={<ChangePasswordPage />} />
+          <Route path="/zarzadzanie-uzytkownikami" element={<UserManager />} />
           <Route
             path="/profil"
             element={
@@ -50,6 +53,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/planowanie-podrozy" element={<JourneyPlanner />} />
 
           <Route
             path="/profil-admina"

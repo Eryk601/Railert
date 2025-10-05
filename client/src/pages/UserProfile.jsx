@@ -1,6 +1,14 @@
-import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import AuthHeader from "../components/AuthHeader";
+import "../styles/main.css";
+import {
+  FaTrain,
+  FaBell,
+  FaSignOutAlt,
+  FaLock,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
 
 export default function UserProfile() {
   const { user, logout } = useAuth();
@@ -9,49 +17,67 @@ export default function UserProfile() {
   return (
     <>
       <AuthHeader />
-      <div className="profile">
-        <h2 className="profile__title">Panel podróżnika</h2>
+      <div className="profile-container">
+        <div className="profile-card">
+          <h2 className="profile-title">🚆 Profil podróżnika</h2>
 
-        <div className="profile-grid-user">
-          <section className="card-profile-user">
-            <h3 className="card__title-user">Dane osobowe</h3>
-
-            <div className="user-info">
-              <p>
-                <b>Email:</b> {user?.email || "brak"}
-              </p>
-              <p>
-                <b>Nazwa użytkownika:</b> {user?.displayName}
-              </p>
-              <p>
-                <b>Reputacja:</b> {user?.reputation}
-              </p>
-              <p>
-                <b>Ilość zgłoszeń:</b> {user?.reports}
-              </p>
+          <div className="user-summary">
+            <div className="avatar-circle">
+              <FaTrain size={30} color="#fff" />
             </div>
-
-            <div className="user__actions">
-              <button
-                className="auth-button-user"
-                onClick={() => navigate("/dodaj-alert")}
-              >
-                Dodaj alert
-              </button>
-
-              <button
-                className="auth-button-user"
-                onClick={() => navigate("/zmien-haslo")}
-              >
-                Zmień hasło
-              </button>
+            <div className="user-text">
+              <h3>{user?.displayName || "Użytkownik"}</h3>
+              <p>{user?.email}</p>
+              <span className="user-role">
+                Rola: <b>{user?.role}</b>
+              </span>
             </div>
-          </section>
-        </div>
+          </div>
 
-        <div style={{ marginTop: 20, textAlign: "center" }}>
-          <button className="auth-button" onClick={logout}>
-            Wyloguj
+          <div className="stats-row">
+            <div className="stat-card">
+              <span className="stat-label">Reputacja</span>
+              <span className="stat-value">{user?.reputation ?? 0}</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Zgłoszenia</span>
+              <span className="stat-value">{user?.reports ?? 0}</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Dołączył</span>
+              <span className="stat-value">
+                {user?.joinedAt
+                  ? new Date(user.joinedAt).toLocaleDateString("pl-PL")
+                  : "—"}
+              </span>
+            </div>
+          </div>
+
+          <div className="profile-actions">
+            <button
+              className="profile-btn"
+              onClick={() => navigate("/dodaj-alert")}
+            >
+              <FaBell /> Dodaj alert
+            </button>
+
+            <button
+              className="profile-btn"
+              onClick={() => navigate("/planowanie-podrozy")}
+            >
+              <FaMapMarkedAlt /> Zaplanuj podróż
+            </button>
+
+            <button
+              className="profile-btn"
+              onClick={() => navigate("/zmien-haslo")}
+            >
+              <FaLock /> Zmień hasło
+            </button>
+          </div>
+
+          <button className="logout-btn" onClick={logout}>
+            <FaSignOutAlt /> Wyloguj
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom"; // ⬅️ dodaj to
 import "../styles/main.css";
 
 export default function RideManager() {
@@ -37,7 +38,13 @@ export default function RideManager() {
 
   return (
     <div className="ride-panel">
+      {/* === PRZYCISK POWROTU === */}
+      <Link to="/profil-admina" className="back-btn">
+        ← Powrót
+      </Link>
+
       <h2>📊 Zarządzanie przejazdami</h2>
+
       {loading ? (
         <p>Ładowanie danych...</p>
       ) : (

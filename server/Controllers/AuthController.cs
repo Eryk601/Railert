@@ -101,7 +101,7 @@ namespace server.Controllers
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null || !user.IsEmailConfirmed)
-                return Ok(); // celowo zwracamy 200, by nie ujawniać czy mail istnieje
+                return Ok();
 
             var token = Guid.NewGuid().ToString();
             user.PasswordResetToken = token;

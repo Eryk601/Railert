@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import eyeOpen from "../assets/eyeopen.png";
 import eyeClosed from "../assets/eyeclosed.png";
 import AuthHeader from "../components/AuthHeader";
-import Alert from "../components/Alert"; // 🟢 nowy komponent
+import Alert from "../components/Alert";
 
 export default function ResetPasswordPage() {
   const [params] = useSearchParams();
@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [show, setShow] = useState(false);
-  const [alert, setAlert] = useState({ message: "", type: "" }); // 🟢 alert
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 

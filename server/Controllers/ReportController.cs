@@ -20,7 +20,6 @@ namespace server.Controllers
             _context = context;
         }
 
-        // === [GET] aktywne raporty ===
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetReports()
@@ -40,7 +39,10 @@ namespace server.Controllers
                     Longitude = r.Longitude,
                     LocationName = r.LocationName,
                     CreatedAt = r.CreatedAt,
+                    IsActive = r.IsActive,
                     ConfirmationsCount = r.ConfirmationsCount,
+                    RejectionsCount = r.RejectionsCount,
+
                     UserDisplayName = string.IsNullOrEmpty(r.User.DisplayName)
                         ? "Użytkownik anonimowy"
                         : r.User.DisplayName,
@@ -51,7 +53,6 @@ namespace server.Controllers
             return Ok(reports);
         }
 
-        // === [POST] dodanie nowego raportu ===
         [HttpPost]
         public async Task<IActionResult> AddReport([FromBody] CreateReportRequest request)
         {
@@ -81,7 +82,6 @@ namespace server.Controllers
             _context.Reports.Add(report);
             await _context.SaveChangesAsync();
 
-            // === AKTUALIZACJA OPÓŹNIENIA (niezależnie od typu incydentu) ===
             if (request.RideId.HasValue && request.DelayMinutes.HasValue && request.DelayMinutes.Value > 0)
             {
                 var ride = await _context.Rides
@@ -90,7 +90,7 @@ namespace server.Controllers
 
                 if (ride != null)
                 {
-                    // Pobierz wszystkie raporty z wypełnionym DelayMinutes > 0
+                    // wszystkie raporty z wypełnionym DelayMinutes > 0
                     var delayReports = await _context.Reports
                         .Where(r => r.RideId == ride.Id && r.Description != null)
                         .ToListAsync();
@@ -103,7 +103,6 @@ namespace server.Controllers
                         })
                         .ToList();
 
-                    // Dodaj bieżące opóźnienie z formularza
                     delays.Add(request.DelayMinutes.Value);
 
                     if (delays.Any())
@@ -129,6 +128,5 @@ namespace server.Controllers
                 report.CreatedAt
             });
         }
-
     }
 }

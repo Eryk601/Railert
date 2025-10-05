@@ -19,9 +19,6 @@ namespace server.Controllers
             _context = context;
         }
 
-        // ==========================
-        // [GET] /api/user/me
-        // ==========================
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetMyProfile()
@@ -54,9 +51,6 @@ namespace server.Controllers
             });
         }
 
-        // ==========================
-        // [GET] /api/user/all
-        // ==========================
         [Authorize(Roles = "Admin,Moderator")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllUsers(
@@ -104,9 +98,6 @@ namespace server.Controllers
             return Ok(new { total, users });
         }
 
-        // ==========================
-        // [PUT] /api/user/reputation/{userId}
-        // ==========================
         [Authorize(Roles = "Admin,Moderator")]
         [HttpPut("reputation/{userId}")]
         public async Task<IActionResult> UpdateReputation(int userId, [FromBody] UpdateReputationRequest request)

@@ -18,7 +18,6 @@ namespace server.Controllers
             _context = context;
         }
 
-        // === [GET] Wszystkie przejazdy ===
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -45,7 +44,6 @@ namespace server.Controllers
             return Ok(rides);
         }
 
-        // === [POST] Dodaj nowy przejazd ===
         [HttpPost]
         public async Task<IActionResult> AddRide([FromBody] Ride ride)
         {
@@ -58,7 +56,6 @@ namespace server.Controllers
             return Ok(ride);
         }
 
-        // === [PUT] Aktualizuj dane przejazdu ===
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRide(int id, [FromBody] Ride updated)
         {
@@ -71,5 +68,62 @@ namespace server.Controllers
 
             return Ok(ride);
         }
+
+        [AllowAnonymous]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchRides([FromQuery] string from, [FromQuery] string to, [FromQuery] TimeSpan? time)
+        {
+            if (string.IsNullOrWhiteSpace(from) || string.IsNullOrWhiteSpace(to))
+                return BadRequest("Wymagane są parametry 'from' i 'to'.");
+
+            var searchTime = time ?? DateTime.UtcNow.TimeOfDay;
+
+            // przejazdy pasujące do stacji i daty
+            var rides = await _context.Rides
+                .Where(r =>
+                    EF.Functions.ILike(r.StartStation, $"%{from}%") &&
+                    EF.Functions.ILike(r.EndStation, $"%{to}%") &&
+                    r.ScheduledDeparture.TimeOfDay >= searchTime)
+                .OrderBy(r => r.ScheduledDeparture)
+                .Select(r => new
+                {
+                    r.Id,
+                    r.TransportType,
+                    r.LineNumber,
+                    r.StartStation,
+                    r.EndStation,
+                    r.ScheduledDeparture,
+                    r.ScheduledArrival,
+                    r.DelayMinutes,
+                    r.IsCancelled
+                })
+                .ToListAsync();
+
+            if (!rides.Any())
+            {
+                rides = await _context.Rides
+                    .Where(r =>
+                        EF.Functions.ILike(r.StartStation, $"%{from}%") &&
+                        EF.Functions.ILike(r.EndStation, $"%{to}%"))
+                    .OrderByDescending(r => r.ScheduledDeparture)
+                    .Take(5)
+                    .Select(r => new
+                    {
+                        r.Id,
+                        r.TransportType,
+                        r.LineNumber,
+                        r.StartStation,
+                        r.EndStation,
+                        r.ScheduledDeparture,
+                        r.ScheduledArrival,
+                        r.DelayMinutes,
+                        r.IsCancelled
+                    })
+                    .ToListAsync();
+            }
+
+            return Ok(rides);
+        }
     }
 }
+

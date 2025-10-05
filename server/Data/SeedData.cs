@@ -187,29 +187,11 @@ namespace server.Data
             // === REPORTS ===
             if (!context.Reports.Any())
             {
-                var ride1 = context.Rides.First(r => r.LineNumber == "IC135");
                 var ride2 = context.Rides.First(r => r.LineNumber == "TLK451");
                 var ride3 = context.Rides.First(r => r.LineNumber == "IC6000");
 
                 var reports = new List<Report>
                 {
-                    new Report
-                    {
-                        TransportType = TransportType.Train,
-                        IncidentType = IncidentType.Delay,
-                        LineNumber = ride1.LineNumber,
-                        Title = "Opóźnienie IC135",
-                        Description = "Pociąg IC135 opóźniony o 10 minut z powodu awarii lokomotywy.",
-                        Latitude = 50.0676,
-                        Longitude = 19.9864,
-                        LocationName = "Kraków Główny",
-                        CreatedAt = DateTime.UtcNow.AddMinutes(-20),
-                        ConfirmationsCount = 3,
-                        RejectionsCount = 0,
-                        IsActive = true,
-                        UserId = user.Id,
-                        RideId = ride1.Id
-                    },
                     new Report
                     {
                         TransportType = TransportType.Train,

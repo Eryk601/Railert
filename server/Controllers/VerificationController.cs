@@ -85,7 +85,7 @@ namespace server.Controllers
             }
 
             // report.UpdateActiveStatus();
-            // report.IsActive = true;
+            report.IsActive = true;
             await _context.SaveChangesAsync();
 
             return Ok(new
